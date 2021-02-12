@@ -1,6 +1,8 @@
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
 const { ApolloServer, gql } = require('apollo-server-express');
-const mongoose = require('mongoose');
 const User = require('./models/user');
 
 const typeDefs = gql`
@@ -53,11 +55,12 @@ const resolvers = {
   }
 };
 
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
+const app = express();
+server.applyMiddleware({ app });
 
 const PORT = process.env.PORT || 5000;
 mongoose
@@ -69,7 +72,7 @@ mongoose
     }
   )
   .then(() => {
-    server.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`Het werkt uitstekend ${PORT}`);
     });
   })
